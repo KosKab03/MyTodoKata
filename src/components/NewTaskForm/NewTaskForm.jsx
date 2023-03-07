@@ -31,7 +31,7 @@ function NewTaskForm({ addItem }) {
     const { label, minute, second } = state;
     const timerTime = Number(minute) * 60 + Number(second);
 
-    if (label !== '' && label.length >= 2) {
+    if (label.trim() !== '' && label.length >= 2) {
       addItem(label, timerTime);
       setState({
         label: '',

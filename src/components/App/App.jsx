@@ -164,7 +164,6 @@ function App() {
           itemObj.timerTime -= 1;
 
           const newArray = [...prev.slice(0, idx), itemObj, ...prev.slice(idx + 1)];
-
           if (!itemObj.timerOn) {
             clearInterval(timer);
           }
@@ -197,6 +196,7 @@ function App() {
   };
 
   const startTimer = (id) => {
+    console.log('true');
     toggleStateTimer(id, true);
     updateTimerTime(id);
   };

@@ -3,17 +3,18 @@ import PropTypes from 'prop-types';
 
 function Task({ itemTask, deletedTask, onCompletedTask, onEditingTask, editingTask, stopTimer, startTimer }) {
   const [inputValue, setInputValue] = useState('');
+  const [inputCheck, setInputCheck] = useState(false);
 
   const onInputValueChange = (e) => setInputValue(e.target.value);
 
   function onSubmit(e) {
     e.preventDefault();
-    if (inputValue !== '' && inputValue.length >= 2) {
+    if (inputValue.trim() !== '' && inputValue.length >= 2) {
       editingTask(itemTask.id, inputValue);
     }
   }
 
-  const { label, timerTime, condition, visibility, timeInterval } = itemTask;
+  const { label, timerTime, timerOn, condition, visibility, timeInterval } = itemTask;
 
   const minute = Math.trunc(timerTime / 60);
   const second = Math.floor(timerTime % 60);
@@ -21,9 +22,26 @@ function Task({ itemTask, deletedTask, onCompletedTask, onEditingTask, editingTa
   return (
     <li className={`${condition} ${visibility}`}>
       <div className="view">
-        <label>
-          <input className="toggle" type="checkbox" id="inputCheckbox" onClick={onCompletedTask} />
-          <span className="title" onClick={onCompletedTask} aria-hidden="true">
+        <input
+          className="toggle"
+          type="checkbox"
+          id="inputCheckbox"
+          checked={inputCheck}
+          onChange={() => {
+            onCompletedTask();
+            setInputCheck(!inputCheck);
+          }}
+        />
+        <label
+          onClick={(e) => {
+            if (e.target.nodeName === 'SPAN') {
+              onCompletedTask();
+              setInputCheck(!inputCheck);
+            }
+          }}
+          aria-hidden="true"
+        >
+          <span className="title" aria-hidden="true">
             {label}
           </span>
           {timerTime !== 0 ? (
@@ -34,7 +52,11 @@ function Task({ itemTask, deletedTask, onCompletedTask, onEditingTask, editingTa
                 title="play timer"
                 aria-label="play timer"
                 label="play"
-                onClick={startTimer}
+                onClick={() => {
+                  if (condition !== 'completed' && !timerOn) {
+                    startTimer();
+                  }
+                }}
               />
               <button
                 type="button"
